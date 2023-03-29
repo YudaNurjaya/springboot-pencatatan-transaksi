@@ -2,8 +2,10 @@ package com.enigma.livecodeecommerce.service;
 
 import com.enigma.livecodeecommerce.exception.DataEmptyException;
 import com.enigma.livecodeecommerce.exception.NotFoundException;
+import com.enigma.livecodeecommerce.model.Product;
 import com.enigma.livecodeecommerce.model.Stock;
 import com.enigma.livecodeecommerce.model.TransactionDetail;
+import com.enigma.livecodeecommerce.repository.ProductRepository;
 import com.enigma.livecodeecommerce.repository.TransactionDetailRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +18,19 @@ import java.util.Optional;
 @Transactional
 public class TransactionDetailService implements IService<TransactionDetail>{
     TransactionDetailRepository detailRepository;
-    ProductService productService;
+    ProductRepository productRepository;
     @Autowired
-    public TransactionDetailService(TransactionDetailRepository detailRepository,ProductService productService) {
+    public TransactionDetailService(TransactionDetailRepository detailRepository,ProductRepository productRepository) {
         this.detailRepository = detailRepository;
-        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @Override
     public TransactionDetail save(TransactionDetail save) {
         try {
-            Optional<TransactionDetail> find = detailRepository.findById(save.getId());
-            Stock stock = find.get().getProduct().getStock();
-            stock.setStock(stock.getStock()-find.get().getQty());
+            Optional<Product> find = productRepository.findById(save.getId());
+            Stock stock = find.get().getStock();
+            stock.setStock(stock.getStock()-save.getQty());
             return detailRepository.save(save);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());

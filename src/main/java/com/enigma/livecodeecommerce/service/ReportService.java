@@ -55,6 +55,7 @@ public class ReportService {
             Product product = transactionDetail.getProduct();
             MonthlyReport monthlyReports = dailyReportMap.getOrDefault(product.getId(), new MonthlyReport());
             monthlyReports.setQty(transactionDetail.getQty());
+            monthlyReports.setDate(transactionDetail.getTransaction().getDate());
             monthlyReports.setTransaksiId(transactionDetail.getTransaction().getId());
             monthlyReports.setProductName(product.getName());
             monthlyReports.setGrandTotal(BigDecimal.valueOf(transactionDetail.getQty()*transactionDetail.getProduct().getPrice().getPrice()));
